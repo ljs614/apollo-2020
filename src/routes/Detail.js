@@ -8,15 +8,18 @@ import Movie from "../components/Movie";
 const GET_MOVIE = gql`
     query getMovie($id: Int!) {
         movie(id: $id) {
-            title
-            medium_cover_image
-            language
-            rating
-            description_intro
+          id
+          title
+          medium_cover_image
+          language
+          rating
+          description_intro
+          isLiked @client
         }
         suggestions(id: $id) {
-            id
-            medium_cover_image
+          id
+          medium_cover_image
+          isLiked @client
         }
     }
 `;
@@ -88,7 +91,7 @@ export default () => {
           <>
             <Row>
               <Column>
-                <Title>{loading? "Loading ..." : data?.movie?.title}</Title>
+                <Title>{data?.movie?.title}{data?.movie?.isLiked?"💖":"🤍"}</Title>
                 <Subtitle>{data?.movie?.language} {data?.movie? "∙" :""} {data?.movie?.rating}</Subtitle>
                 <Description>{data?.movie?.description_intro}</Description>
               </Column>
@@ -97,7 +100,12 @@ export default () => {
             <Row>
               <Suggstions>
                 {data?.suggestions?.map(s => (
-                  <Movie key={s.id} id={s.id} bg={s.medium_cover_image}/>
+                  <Movie 
+                    key={s.id} 
+                    id={s.id}
+                    isLiked={s.isLiked}
+                    bg={s.medium_cover_image}
+                  />
                 ))}
               </Suggstions>
             </Row>
